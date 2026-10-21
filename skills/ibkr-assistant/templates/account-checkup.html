@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IBKR 账户体检报告</title>
+<style>
+  :root{
+    --ink:#1c1c1e; --ink-2:#4a4a4f; --ink-3:#8a8a8f;
+    --line:#e6e6e8; --bg:#ffffff; --bg-soft:#f7f7f8;
+    --pos:#b3261e; --neg:#1a7f4b; --warn:#8a5a00;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Helvetica Neue",Arial,sans-serif;
+    font-size:15px;line-height:1.65;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:840px;margin:0 auto;padding:48px 24px 72px}
+  header{border-bottom:1px solid var(--line);padding-bottom:20px;margin-bottom:28px}
+  .eyebrow{font-size:12px;letter-spacing:.08em;color:var(--ink-3);text-transform:uppercase;margin-bottom:8px}
+  h1{font-size:26px;line-height:1.3;margin:0 0 6px;font-weight:600}
+  .meta{font-size:13px;color:var(--ink-3)}
+  h2{font-size:16px;font-weight:600;margin:36px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+  .verdict{background:var(--bg-soft);border-left:3px solid var(--ink);padding:16px 18px;margin:0 0 8px}
+  .verdict p{margin:0 0 8px}
+  .verdict p:last-child{margin:0}
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin:16px 0 0}
+  .kpi{background:#fff;padding:14px 16px}
+  .kpi .k{font-size:12px;color:var(--ink-3);margin-bottom:4px}
+  .kpi .v{font-size:20px;font-weight:600;letter-spacing:-.01em}
+  .kpi .s{font-size:12px;color:var(--ink-3);margin-top:2px}
+  table{width:100%;border-collapse:collapse;font-size:14px;margin:8px 0 0;display:block;overflow-x:auto}
+  thead th{text-align:left;font-weight:500;color:var(--ink-3);font-size:12px;letter-spacing:.04em;
+    border-bottom:1px solid var(--line);padding:8px 10px;white-space:nowrap}
+  tbody td{padding:10px;border-bottom:1px solid var(--line);white-space:nowrap}
+  tbody tr:last-child td{border-bottom:none}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+  .flag{color:var(--warn)}
+  ul.findings{padding-left:18px;margin:10px 0 0}
+  ul.findings li{margin-bottom:10px}
+  ul.findings b{font-weight:600}
+  .note{font-size:12.5px;color:var(--ink-3);margin-top:10px}
+  footer{margin-top:44px;padding-top:16px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-3)}
+  @media print{body{font-size:12.5px}.wrap{padding:0}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">Interactive Brokers · Account Health Check</div>
+    <h1>IBKR 账户体检报告</h1>
+    <div class="meta">
+      账户 <!-- {{ACCOUNT_ID}} --> · <!-- {{PAPER_OR_LIVE}} --> · 数据时点 <!-- {{AS_OF}} --> · 端口 <!-- {{PORT}} -->
+    </div>
+  </header>
+
+  <section>
+    <h2>结论</h2>
+    <div class="verdict">
+      <p><!-- {{VERDICT_ONE_LINE}}：一句话说清账户当前状态，例如"账户结构健康，但单一标的占比 41%，回撤敏感度偏高"。 --></p>
+      <p class="note"><!-- {{VERDICT_SCOPE}}：本报告只描述事实与风险敞口，不构成投资建议。 --></p>
+    </div>
+
+    <div class="kpis">
+      <div class="kpi"><div class="k">净清算价值</div><div class="v"><!-- {{NLV}} --></div><div class="s"><!-- {{NLV_CCY}} --></div></div>
+      <div class="kpi"><div class="k">可用资金</div><div class="v"><!-- {{AVAILABLE}} --></div><div class="s">不含持仓占用</div></div>
+      <div class="kpi"><div class="k">购买力</div><div class="v"><!-- {{BUYING_POWER}} --></div><div class="s">按当前保证金口径</div></div>
+      <div class="kpi"><div class="k">保证金占用率</div><div class="v"><!-- {{MARGIN_UTIL}} --></div><div class="s"><!-- {{MARGIN_HINT}} --></div></div>
+      <div class="kpi"><div class="k">现金占比</div><div class="v"><!-- {{CASH_PCT}} --></div><div class="s"><!-- {{CASH_HINT}} --></div></div>
+      <div class="kpi"><div class="k">浮动盈亏</div><div class="v"><!-- {{UNREALIZED_PNL}} --></div><div class="s">未实现</div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>持仓明细</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>标的</th><th>方向</th><th class="num">数量</th><th class="num">成本价</th>
+          <th class="num">现价</th><th class="num">市值</th><th class="num">浮动盈亏</th><th class="num">占比</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- 每个持仓一行，占比 >30% 的标的在占比列加 class="num flag" 并在下方风险提示中写明 -->
+        <tr>
+          <td><!-- {{SYMBOL}} --></td><td><!-- {{SIDE}} --></td>
+          <td class="num"><!-- {{QTY}} --></td><td class="num"><!-- {{AVG_COST}} --></td>
+          <td class="num"><!-- {{LAST}} --></td><td class="num"><!-- {{MKT_VALUE}} --></td>
+          <td class="num"><!-- {{PNL}} --></td><td class="num"><!-- {{WEIGHT}} --></td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="note">成本价与盈亏口径：<!-- {{COST_BASIS_NOTE}} -->（IBKR 按 FIFO 计算已实现盈亏时口径可能不同，需在正文注明）。</p>
+  </section>
+
+  <section>
+    <h2>三条风险提示</h2>
+    <ul class="findings">
+      <li><b>集中度：</b><!-- {{CONCENTRATION_FINDING}} --></li>
+      <li><b>保证金与杠杆：</b><!-- {{MARGIN_FINDING}} --></li>
+      <li><b>现金与币种：</b><!-- {{CASH_FX_FINDING}} --></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>当日状态</h2>
+    <table>
+      <thead>
+        <tr><th>项目</th><th class="num">数值</th><th>说明</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>当日盈亏</td><td class="num"><!-- {{DAY_PNL}} --></td><td>不含未确认成交</td></tr>
+        <tr><td>未成交订单</td><td class="num"><!-- {{OPEN_ORDERS}} --></td><td><!-- {{OPEN_ORDERS_NOTE}} --></td></tr>
+        <tr><td>当日成交</td><td class="num"><!-- {{EXECUTIONS}} --></td><td><!-- {{EXECUTIONS_NOTE}} --></td></tr>
+        <tr><td>账户类型</td><td class="num"><!-- {{ACCOUNT_TYPE}} --></td><td><!-- {{ACCOUNT_TYPE_NOTE}} --></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <footer>
+    数据来源：本机 TWS / IB Gateway（<!-- {{CONNECTION_NOTE}} -->）。生成时间 <!-- {{GENERATED_AT}} -->。
+    费率与规则以 interactivebrokers.com 官方页面为准。本报告为账户现状描述，不构成投资建议。
+  </footer>
+
+</div>
+</body>
+</html>

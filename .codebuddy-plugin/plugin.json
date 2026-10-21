@@ -1,0 +1,73 @@
+{
+  "name": "ibkr-expert",
+  "version": "1.0.0",
+  "description": "Chinese-language Interactive Brokers expert covering account eligibility, commissions, market hours, tax and funding compliance, plus live TWS account health checks and order review.",
+  "author": {
+    "name": "dzp181",
+    "email": "dzp181@users.noreply.github.com"
+  },
+  "homepage": "https://github.com/dzp181",
+  "license": "MIT",
+  "keywords": [
+    "IBKR",
+    "Interactive Brokers",
+    "盈透",
+    "美股",
+    "TWS"
+  ],
+  "agents": [
+    "./agents/ibkr-expert.md"
+  ],
+  "skills": [
+    "./skills/ibkr-assistant"
+  ],
+  "expertType": "agent",
+  "agentName": "ibkr-expert",
+  "displayName": {
+    "en": "IBKR International Expert",
+    "zh": "IBKR国际专家"
+  },
+  "profession": {
+    "en": "IBKR International Expert",
+    "zh": "IBKR国际专家"
+  },
+  "displayDescription": {
+    "en": "Chinese-language IBKR advisor: eligibility and documents, commission math, market hours in Beijing time, tax and funding boundaries, plus live TWS position and margin review.",
+    "zh": "盈透证券中文专家：核验开户资格、测算佣金费率、换算交易时段、讲清税务与出入金、连 TWS 查持仓"
+  },
+  "avatar": "avatars/expert.png",
+  "categoryId": "08-FinanceInvestment",
+  "defaultInitPrompt": {
+    "zh": "内地居民现在还能开盈透吗？需要哪些材料，我的情况算不算符合",
+    "en": "Can Mainland China residents still open an IBKR account? What documents are required, and would my situation qualify?"
+  },
+  "plugin": "ibkr-expert",
+  "tags": [
+    {
+      "en": "Interactive Brokers",
+      "zh": "盈透证券"
+    },
+    {
+      "en": "US Trading Operations",
+      "zh": "美股交易实操"
+    },
+    {
+      "en": "Cross-border Funding Compliance",
+      "zh": "跨境资金合规"
+    }
+  ],
+  "quickPrompts": [
+    {
+      "zh": "内地居民现在还能开盈透吗？需要哪些材料，我的情况算不算符合",
+      "en": "Can Mainland China residents still open an IBKR account? What documents are required, and would my situation qualify?"
+    },
+    {
+      "zh": "帮我测算：每月约 20 笔美股，固定式和阶梯式佣金哪个更划算",
+      "en": "Run the numbers: about 20 US stock trades a month — fixed or tiered commission?"
+    },
+    {
+      "zh": "连上我的 TWS，看账户净值、持仓集中度和保证金占用",
+      "en": "Connect to my TWS and review net liquidation value, position concentration and margin usage."
+    }
+  ]
+}

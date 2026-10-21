@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IBKR国际助理 · 使用说明</title>
+<style>
+  :root{
+    --black:#111317;
+    --black-2:#1c1f24;
+    --red:#c8102e;
+    --red-deep:#96091f;
+    --red-soft:#fdf3f5;
+    --ink:#1a1d21;
+    --ink-2:#545f6d;
+    --ink-3:#8792a0;
+    --line:#d9e0e8;
+    --line-2:#eceff3;
+    --soft:#f4f6f9;
+    --soft-warm:#f5f6f7;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  .flow>*,.say-grid>*,.dont>*,.layers>*,.chips>*,.gates>*{min-width:0}
+  .turn .bubble{overflow-wrap:anywhere}
+  html,body{max-width:100%;overflow-x:hidden}
+  body{
+    margin:0;background:#fff;color:var(--ink);
+    font-family:var(--sans);font-size:16.5px;line-height:1.8;
+    -webkit-font-smoothing:antialiased;
+  }
+  .topbar{
+    background:var(--black);color:#fff;height:54px;display:flex;align-items:center;
+    position:sticky;top:0;z-index:20
+  }
+  .topbar .inner{
+    max-width:1000px;margin:0 auto;padding:0 28px;width:100%;
+    display:flex;align-items:center;gap:14px
+  }
+  .logo{
+    width:30px;height:30px;background:var(--red);color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    font-family:Georgia,serif;font-size:14px;font-weight:700;letter-spacing:.5px;border-radius:2px;flex:none
+  }
+  .topbar .name{font-size:14.5px;font-weight:600;letter-spacing:.01em}
+  .topbar .sep{flex:1}
+  .topbar .ver{
+    font-size:11.5px;color:#c3c7cd;border:1px solid rgba(255,255,255,.28);
+    border-radius:2px;padding:2px 7px;letter-spacing:.04em
+  }
+
+  .wrap{max-width:1000px;margin:0 auto;padding:0 28px}
+  .band{padding:48px 0 42px;border-bottom:1px solid var(--line)}
+  .band.soft{background:var(--soft);border-bottom:1px solid var(--line)}
+  .band.soft .wrap{padding-top:46px;padding-bottom:46px}
+
+  .eyebrow{
+    font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--red);margin-bottom:12px
+  }
+  h1{font-size:38px;line-height:1.28;margin:0 0 14px;letter-spacing:-.02em;font-weight:700;color:var(--black)}
+  h1 em{font-style:normal;color:var(--red)}
+  h2{font-size:24px;line-height:1.4;margin:0 0 8px;letter-spacing:-.01em;color:var(--black);font-weight:700}
+  h3{font-size:16.5px;margin:0 0 6px;color:var(--ink);font-weight:600}
+  .sub{font-size:17.5px;color:var(--ink-2);max-width:720px;margin:0}
+  .sec-lead{color:var(--ink-2);margin:10px 0 26px;max-width:700px;font-size:16px}
+  p{margin:0 0 14px}
+  code{font-family:var(--mono);font-size:.86em;background:var(--soft);border:1px solid var(--line-2);border-radius:2px;padding:1px 5px;color:#25303c}
+  .num{font-variant-numeric:tabular-nums;font-family:var(--mono);font-size:.94em;color:var(--black)}
+
+  /* 两层 */
+  .layers{display:grid;gap:14px}
+  .layer{border:1px solid var(--line);border-radius:3px;padding:20px 22px 22px;background:var(--soft)}
+  .layer.l2{background:var(--red-soft);border-color:#f0d2d8}
+  .layer-head{display:flex;align-items:center;gap:10px;margin-bottom:15px;flex-wrap:wrap}
+  .layer-tag{
+    font-size:11.5px;font-weight:700;letter-spacing:.1em;background:var(--black);color:#fff;
+    padding:3px 8px;border-radius:2px;flex:none;line-height:1.6
+  }
+  .layer.l2 .layer-tag{background:var(--red)}
+  .layer-title{font-size:15px;font-weight:600;color:var(--black);line-height:1.5}
+  .layer-title span{color:var(--ink-3);font-weight:400}
+  .chips{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+  .chip{
+    background:#fff;border:1px solid var(--line);border-radius:3px;padding:15px 14px;
+    text-align:center;font-size:14.5px;font-weight:600;color:var(--ink);line-height:1.6
+  }
+  .chip small{display:block;font-size:12.5px;color:var(--ink-3);font-weight:400;margin-top:2px}
+  .gates{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  .gate{
+    position:relative;background:#fff;border:1px solid #efc9d0;border-radius:3px;
+    padding:13px 10px 13px;text-align:center
+  }
+  .gate b{display:block;font-size:13.8px;color:var(--black);font-weight:600;line-height:1.5}
+  .gate small{display:block;font-size:12.2px;color:var(--ink-3);margin-top:2px;line-height:1.55}
+  .gate .n{
+    display:block;position:static;margin-bottom:3px;
+    font-family:var(--mono);font-size:10px;color:var(--red);letter-spacing:.14em
+  }
+  .gate:not(:last-child)::after{
+    content:"\2192";position:absolute;right:-13px;top:50%;transform:translateY(-50%);
+    color:var(--red);font-size:12px;line-height:1
+  }
+  .layer-note{font-size:13.5px;color:var(--ink-2);margin:16px 0 0;line-height:1.75}
+  .layer-note b{color:var(--black)}
+  .layer-note a{
+    color:var(--red);text-decoration:none;font-weight:600;
+    border-bottom:1px solid rgba(200,16,46,.32);white-space:nowrap
+  }
+  .layer-note a:hover{border-bottom-color:var(--red)}
+
+  /* 可折叠的两块 */
+  details.sec{border-bottom:1px solid var(--line);background:#fff}
+  details.sec.soft{background:var(--soft)}
+  details.sec>.sum{list-style:none;cursor:pointer;display:block;padding:34px 0 6px}
+  details.sec>.sum::-webkit-details-marker{display:none}
+  details.sec>.sum .wrap{padding-bottom:14px}
+  .h2row{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .h2row h2{margin:0}
+  .fold{
+    display:inline-flex;align-items:center;font-size:12px;color:var(--ink-3);
+    border:1px solid var(--line);background:#fff;border-radius:2px;
+    padding:2px 8px;letter-spacing:.04em;flex:none;line-height:1.7;font-weight:400
+  }
+  .fold::after{content:"展开 +"}
+  details[open]>.sum .fold::after{content:"收起 –"}
+  details.sec>.sum:hover .fold{border-color:var(--red);color:var(--red)}
+  details.sec>.sum:hover h2{color:var(--red-deep)}
+  details.sec>.sbody{padding-bottom:44px}
+  details.sec>.sbody>.sec-lead{margin-top:8px}
+
+  /* flow */
+  .flow{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--line);border-radius:3px;overflow:hidden}
+  .flow{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--line);border-radius:3px;overflow:hidden}
+  .flow .cell{padding:22px 22px 20px;border-right:1px solid var(--line);background:#fff}
+  .flow .cell:last-child{border-right:none}
+  .flow .idx{font-family:var(--mono);font-size:12px;color:var(--red);margin-bottom:10px;letter-spacing:.08em}
+  .flow h3{font-size:15.5px;margin-bottom:6px}
+  .flow p{font-size:14px;color:var(--ink-2);margin:0;line-height:1.7}
+
+  /* say cards */
+  .say-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .say-card{border:1px solid var(--line);border-radius:3px;padding:18px 18px 16px;background:#fff}
+  .say-card .cat{
+    font-size:11.5px;font-weight:700;letter-spacing:.1em;color:var(--red);
+    text-transform:uppercase;margin-bottom:10px
+  }
+  .say-card ul{list-style:none;margin:0;padding:0}
+  .say-card li{
+    font-size:14px;color:var(--ink);padding:7px 0 7px 14px;position:relative;line-height:1.65;
+    border-bottom:1px dashed var(--line-2)
+  }
+  .say-card li:last-child{border-bottom:none;padding-bottom:0}
+  .say-card li::before{
+    content:"";position:absolute;left:0;top:15px;width:5px;height:5px;background:var(--red);border-radius:50%
+  }
+  .say-note{font-size:13.5px;color:var(--ink-3);margin:14px 0 0}
+
+  /* steps */
+  .steps{counter-reset:s;list-style:none;margin:0;padding:0}
+  .steps>li{
+    counter-increment:s;position:relative;padding:0 0 28px 44px;
+    border-left:2px solid var(--line);margin-left:14px
+  }
+  .steps>li:last-child{padding-bottom:0;border-left-color:transparent}
+  .steps>li::before{
+    content:counter(s);position:absolute;left:-14px;top:0;
+    width:28px;height:28px;background:var(--black);color:#fff;border-radius:2px;
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--mono);font-size:13px;font-weight:600
+  }
+  .steps h3{font-size:16px;margin:1px 0 6px}
+  .steps p{font-size:14.5px;color:var(--ink-2);margin:0 0 10px;max-width:620px}
+  .hint{
+    font-size:13.5px;color:#7a1226;background:#fdf3f5;border-left:3px solid var(--red);
+    padding:9px 13px;border-radius:0 2px 2px 0;margin:8px 0 0
+  }
+  .hint.plain{color:var(--ink-2);background:var(--soft);border-left-color:var(--black)}
+
+  /* dialogue blocks */
+  .story{border:1px solid var(--line);border-radius:3px;margin-bottom:18px;overflow:hidden;background:#fff}
+  .story-head{
+    background:var(--soft);border-bottom:1px solid var(--line);padding:12px 18px;
+    font-size:13px;color:var(--ink-2);display:flex;justify-content:space-between;gap:12px
+  }
+  .story-head b{color:var(--black);font-weight:600;font-size:13.5px}
+  .story-body{padding:20px 18px 8px}
+  .turn{margin-bottom:18px}
+  .turn .who{
+    font-size:11.5px;letter-spacing:.08em;color:var(--ink-3);text-transform:uppercase;margin-bottom:5px
+  }
+  .turn.user .bubble{
+    background:var(--black);color:#fff;padding:10px 15px;border-radius:3px;
+    font-size:14.5px;line-height:1.7;display:inline-block;max-width:88%
+  }
+  .turn.bot .bubble{
+    background:#fff;border:1px solid var(--line);border-left:3px solid var(--red);
+    padding:12px 15px;border-radius:2px;font-size:14.5px;line-height:1.75;color:var(--ink-2);
+    display:inline-block;max-width:94%
+  }
+  .turn.bot .bubble b{color:var(--ink);font-weight:600}
+  .turn.bot .bubble .act{
+    display:block;margin-top:8px;padding-top:8px;border-top:1px dashed var(--line-2);
+    font-size:13px;color:var(--ink-3)
+  }
+
+  /* table */
+  table{width:100%;border-collapse:collapse;font-size:14.5px;border:1px solid var(--line);background:#fff}
+  thead th{
+    background:var(--soft);text-align:left;font-size:12.5px;letter-spacing:.06em;
+    color:var(--ink-2);font-weight:700;padding:10px 14px;border-bottom:1px solid var(--line);
+    text-transform:uppercase
+  }
+  tbody td{padding:12px 14px;border-bottom:1px solid var(--line-2);vertical-align:top;line-height:1.7}
+  tbody tr:last-child td{border-bottom:none}
+  td.term{width:26%;color:var(--red-deep);font-weight:600}
+
+  /* dont */
+  .dont{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .dont .item{border-top:3px solid var(--black);background:#f8f8f9;padding:16px 18px}
+  .dont .item h3{font-size:15px;color:var(--ink);margin-bottom:6px}
+  .dont .item p{font-size:14px;color:var(--ink-2);margin:0;line-height:1.7}
+
+  /* faq —— 只作用于问答项，不碰可折叠的分块标题 */
+  details:not(.sec){border:1px solid var(--line);border-radius:2px;margin-bottom:8px;background:#fff}
+  summary:not(.sum){
+    cursor:pointer;padding:13px 16px;font-size:15px;font-weight:600;color:var(--ink);
+    list-style:none;display:flex;justify-content:space-between;gap:14px;align-items:center
+  }
+  summary:not(.sum)::-webkit-details-marker{display:none}
+  summary:not(.sum)::after{content:"+";color:var(--red);font-size:18px;font-weight:400;flex:none;line-height:1}
+  details[open] summary:not(.sum)::after{content:"–"}
+  details[open] summary:not(.sum){border-bottom:1px solid var(--line-2);background:var(--soft)}
+  .dbody{padding:14px 16px 16px;font-size:14.5px;color:var(--ink-2);line-height:1.8}
+  .dbody p:last-child{margin-bottom:0}
+  .dbody b{color:var(--ink)}
+
+  footer{background:var(--black);color:#cfd2d6;padding:34px 0 40px;font-size:13px;line-height:1.85}
+  footer .wrap{max-width:1000px}
+  footer b{color:#fff}
+  footer p{margin:0 0 7px}
+  .cmd{display:block;background:var(--soft);border:1px solid var(--line);border-radius:2px;padding:10px 13px;font-family:var(--mono);font-size:12.5px;color:#25303c;overflow-x:auto;white-space:pre;line-height:1.75}
+
+  @media (max-width:860px){
+    .flow,.say-grid,.dont,.chips,.gates{grid-template-columns:1fr}
+    .flow .cell{border-right:none;border-bottom:1px solid var(--line)}
+    .flow .cell:last-child{border-bottom:none}
+    .gate:not(:last-child)::after{
+      content:"\2193";right:auto;left:50%;top:auto;bottom:-14px;transform:translateX(-50%)
+    }
+    .gates{gap:18px}
+    .layer{padding:18px 16px 18px}
+    h1{font-size:30px}
+    .wrap{padding:0 20px}
+  }
+  @media print{
+    body{font-size:11.5pt}
+    .topbar{position:static}
+    details .dbody{display:block!important}
+    .band,details.sec{page-break-inside:avoid}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="inner">
+    <div class="logo">IB</div>
+    <div class="name">IBKR国际助理</div>
+    <div class="sep"></div>
+    <div class="ver">v1.1.10</div>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="band">
+  <div class="wrap">
+    <div class="eyebrow">Interactive Brokers 中文助手</div>
+    <h1>你只管说话，<br><em>剩下的我来。</em></h1>
+    <p class="sub">
+      想查开户条件、算手续费，直接问；想查账户、看行情、挂单撤单，也能做。
+      这两件事分成两层——问规则的那层不用连任何东西，动账户的那层才需要你开一下客户端。
+    </p>
+  </div>
+</div>
+
+<!-- 两层总览 -->
+<div class="band soft" id="layers">
+  <div class="wrap">
+    <div class="eyebrow">它分两层</div>
+    <h2>一层只动嘴，一层要动手</h2>
+    <p class="sec-lead">
+      这两层是分开的。你不用为了问一句「手续费多少」去装客户端；
+      反过来，只要碰到你账户里的钱，每一步我都会先停下来等你点头。
+    </p>
+
+    <div class="layers">
+      <div class="layer l1">
+        <div class="layer-head">
+          <span class="layer-tag">问答层</span>
+          <span class="layer-title">规则类问题 <span>· 只查资料库，不碰券商接口</span></span>
+        </div>
+        <div class="chips">
+          <div class="chip">开户与材料<small>资格、证明、流程</small></div>
+          <div class="chip">佣金与费用<small>手续费、订阅、月费</small></div>
+          <div class="chip">时间·税务·客服<small>开盘时段、预扣税、联系方式</small></div>
+        </div>
+        <p class="layer-note">
+          这一层完全不连你的账户，<b>连盈透客户端都不用装</b>。答案来自整理好的资料，
+          每条都标了核实月份，过期的我会主动提醒你。 <a href="#ask">展开看细节 →</a>
+        </p>
+      </div>
+
+      <div class="layer l2">
+        <div class="layer-head">
+          <span class="layer-tag">实操层</span>
+          <span class="layer-title">账户与交易 <span>· 连本机已登录的 TWS / Gateway，四步放行</span></span>
+        </div>
+        <div class="gates">
+          <div class="gate"><span class="n">01</span><b>只读查询</b><small>账户·行情·订单</small></div>
+          <div class="gate"><span class="n">02</span><b>dry-run</b><small>复述给你确认</small></div>
+          <div class="gate"><span class="n">03</span><b>--execute</b><small>当轮明确授权</small></div>
+          <div class="gate"><span class="n">04</span><b>--live-confirm</b><small>实盘二次确认</small></div>
+        </div>
+        <p class="layer-note">
+          前两步随便叫停。查数据用的连接是<b>只读</b>的，物理上改不了账户；
+          只有后两步才可能真的发单，而且换一笔就要重新确认一次。 <a href="#act">展开看细节 →</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 第一块：问答层 -->
+<details class="sec" id="ask" open>
+  <summary class="sum">
+    <div class="wrap">
+      <div class="eyebrow">第一块 · 问答层</div>
+      <div class="h2row">
+        <h2>只动嘴，什么也不用装</h2>
+        <span class="fold"></span>
+      </div>
+    </div>
+  </summary>
+  <div class="wrap sbody">
+    <p class="sec-lead">
+      下面三类问题不碰账户，问了就答。你可以只用这一层，完全不管第二块——很多人就是这样用的。
+    </p>
+
+    <div class="say-grid">
+      <div class="say-card">
+        <div class="cat">开户与材料</div>
+        <ul>
+          <li>内地人现在还能开盈透吗</li>
+          <li>开好户以后，入金几天能到</li>
+          <li>开出来的账户在美国还是香港</li>
+        </ul>
+      </div>
+      <div class="say-card">
+        <div class="cat">佣金与费用</div>
+        <ul>
+          <li>买美股一手要多少手续费</li>
+          <li>期权和期货分别怎么收</li>
+          <li>账户放着不动要交月费吗</li>
+        </ul>
+      </div>
+      <div class="say-card">
+        <div class="cat">时间 · 税务 · 客服</div>
+        <ul>
+          <li>美股北京时间几点开盘</li>
+          <li>分红和利息要交多少税</li>
+          <li>中文客服几点有人</li>
+        </ul>
+      </div>
+    </div>
+    <p class="say-note">每一句都可以照原样说出来，不用改写成专业术语。</p>
+
+    <div style="height:28px"></div>
+
+    <div class="story">
+      <div class="story-head"><span><b>这一层长什么样</b>　纯问规则，全程没连账户</span><span>2 轮</span></div>
+      <div class="story-body">
+        <div class="turn user">
+          <div class="who">你</div>
+          <div class="bubble">内地人现在还能开盈透吗？</div>
+        </div>
+        <div class="turn bot">
+          <div class="who">助手</div>
+          <div class="bubble">
+            能申请，但不是拿身份证就能开。2025 年 8 月起，需要你提供「长期在境外居住或工作」的证明，
+            比如显示境外地址的水电账单、银行月结单。<br>
+            开出来的账户在美国实体，不在香港。
+            <span class="act">这一层不连客户端 · 答案标注核实月份与官网出处</span>
+          </div>
+        </div>
+        <div class="turn user">
+          <div class="who">你</div>
+          <div class="bubble">那你能帮我把地址证明搞定吗？</div>
+        </div>
+        <div class="turn bot">
+          <div class="who">助手</div>
+          <div class="bubble">
+            不能，这个我不做。伪造材料的结果是账户被关、资金冻结，以后在别家也难过审。<br>
+            合规的路只有一条：你确实在境外住或工作，用真实材料去申请。
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="hint plain" style="margin-top:0">
+      问规则这条路上没有「执行」这一步，所以也不存在误操作。答错了顶多是你白看一段字，不会动你一分钱。
+    </p>
+  </div>
+</details>
+
+<!-- 第二块：实操层 -->
+<details class="sec soft" id="act" open>
+  <summary class="sum">
+    <div class="wrap">
+      <div class="eyebrow">第二块 · 实操层</div>
+      <div class="h2row">
+        <h2>四步放行，一步都不会跳</h2>
+        <span class="fold"></span>
+      </div>
+    </div>
+  </summary>
+  <div class="wrap sbody">
+    <p class="sec-lead">
+      只要碰你账户里的数字，都走这四步。你可以把 01 和 02 当成安全区——看到这一步为止，
+      世界上没有任何一笔单子因为你说了一句话而被发出去。
+    </p>
+
+    <table>
+      <thead><tr><th style="width:24%">步骤</th><th style="width:40%">它做什么</th><th>你能叫停吗</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="term">01 只读查询</td>
+          <td>读余额、持仓、行情、订单状态。连接本身是只读权限，改不了任何东西。</td>
+          <td>不用叫停——它本来就没有动账户的能力。</td>
+        </tr>
+        <tr>
+          <td class="term">02 dry-run 预演</td>
+          <td>把方向、数量、价格、保证金、手续费念给你听，然后停下等回复。</td>
+          <td>随时。不回「确认」就永远停在这一步。</td>
+        </tr>
+        <tr>
+          <td class="term">03 --execute 执行</td>
+          <td>真正发单，只发你这一轮明确确认过的那一笔。换个价格就得重来一遍。</td>
+          <td>发出去之前可以；发出去之后让你撤单。</td>
+        </tr>
+        <tr>
+          <td class="term">04 --live-confirm</td>
+          <td>账户号 U 开头（真钱）时，再要你亲口说一句「确认实盘下单」。</td>
+          <td>不说这句话，单子就不会发出去。</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div style="height:34px"></div>
+
+    <h3 style="font-size:18px;margin-bottom:6px">先做三步，才连得上</h3>
+    <p class="sec-lead">
+      只有这一块需要动手配置。三步做完一次，以后打开客户端就能直接用。
+    </p>
+    <ol class="steps" id="start">
+      <li>
+        <h3>电脑上打开盈透的客户端，并登录</h3>
+        <p>两个都行：<b>TWS</b>（Trader Workstation，功能全）或 <b>IB Gateway</b>（更轻，只做连接）。手机 App 不行，必须电脑端。</p>
+        <div class="hint plain">客户端必须保持开着并登录。关掉它，我就连不上你的账户了。</div>
+      </li>
+      <li>
+        <h3>在客户端里打开一个开关</h3>
+        <p>菜单 <b>File</b> → <b>Global Configuration</b> → <b>API</b> → <b>Settings</b>，勾上 <b>Enable ActiveX and Socket Clients</b>，然后确认一下端口号。</p>
+        <div class="hint">
+          端口别记错：TWS 模拟盘 7497、实盘 7496；IB Gateway 模拟盘 4002、实盘 4001。
+          如果连上却发现账户是空的，八成是这里选错了。
+        </div>
+      </li>
+      <li>
+        <h3>跟我说一句「检查一下连接」</h3>
+        <p>我会告诉你连没连上、连的是模拟盘还是真实账户、能不能看到行情。确认没问题，就可以开始用了。</p>
+        <div class="hint plain">
+          真实账户号以 <b>U</b> 开头，模拟盘以 <b>DU</b> 开头。我会在每次报数字前先说清楚是哪种，避免你把模拟盘的钱当成真的。
+        </div>
+      </li>
+    </ol>
+
+    <div style="height:34px"></div>
+
+    <h3 style="font-size:18px;margin-bottom:6px">连上之后能说什么</h3>
+    <p class="sec-lead">这些都要在连上客户端之后才问，问法跟第一块一样，还是大白话。</p>
+    <div class="say-grid">
+      <div class="say-card">
+        <div class="cat">看账户</div>
+        <ul>
+          <li>我账户现在还有多少钱</li>
+          <li>我持了哪些股票，赚了还是亏了</li>
+          <li>今天一共赚了多少</li>
+        </ul>
+      </div>
+      <div class="say-card">
+        <div class="cat">看行情与订单</div>
+        <ul>
+          <li>苹果现在什么价</li>
+          <li>我挂的单成交了没</li>
+          <li>帮我把那笔没成交的撤了</li>
+        </ul>
+      </div>
+      <div class="say-card">
+        <div class="cat">算成本再下单</div>
+        <ul>
+          <li>买 100 股英伟达要占多少保证金</li>
+          <li>这笔单子手续费多少</li>
+          <li>帮我买 100 股苹果，限价 230</li>
+        </ul>
+      </div>
+    </div>
+
+    <div style="height:32px"></div>
+
+    <h3 style="font-size:18px;margin-bottom:16px">两段真实对话，看它怎么来回</h3>
+
+    <div class="story">
+      <div class="story-head"><span><b>场景一</b>　看持仓，顺便搞懂术语</span><span>3 轮 · 只读</span></div>
+      <div class="story-body">
+        <div class="turn user">
+          <div class="who">你</div>
+          <div class="bubble">我现在持了哪些股票，赚了还是亏了？</div>
+        </div>
+        <div class="turn bot">
+          <div class="who">助手</div>
+          <div class="bubble">
+            两只：<b>苹果</b> 120 股，成本 198.40，现价 229.86，浮盈约 <span class="num">3,775</span> 美元；
+            <b>英伟达</b> 40 股，成本 131.20，现价 124.60，浮亏约 <span class="num">-264</span> 美元。<br>
+            合计浮盈约 <span class="num">3,511</span> 美元。注意这是模拟盘的数据。
+            <span class="act">已执行：只读连接 → 读取持仓 → 拉取两个标的现价 → 计算浮盈</span>
+          </div>
+        </div>
+        <div class="turn user">
+          <div class="who">你</div>
+          <div class="bubble">浮盈是什么意思？会直接变成我的钱吗？</div>
+        </div>
+        <div class="turn bot">
+          <div class="who">助手</div>
+          <div class="bubble">
+            浮盈就是「账面上赚的、但还没落袋」。只要没卖，价格一跌它就缩水。<br>
+            卖掉之后才变成已实现盈亏，那时候才算真赚到手。
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="story">
+      <div class="story-head"><span><b>场景二</b>　下单，注意它拦了你两次</span><span>5 轮 · 走到了 04</span></div>
+      <div class="story-body">
+        <div class="turn user">
+          <div class="who">你</div>
+          <div class="bubble">帮我买 100 股苹果，限价 230。</div>
+        </div>
+        <div class="turn bot">
+          <div class="who">助手</div>
+          <div class="bubble">
+            先不动手，给你念一遍参数：<br>
+            方向 <b>买入</b>、数量 <b>100 股</b>、类型 <b>限价单</b>、价格 <b>230 美元</b>、有效期 <b>当日</b>、账户 <b>模拟盘</b>。<br>
+            大约占用保证金 <span class="num">23,000</span> 美元，手续费 <span class="num">1.00</span> 美元。<br>
+            都对的话，回我一句「确认下单」。
+            <span class="act">停在 02 dry-run · 订单未提交</span>
+          </div>
+        </div>
+        <div class="turn user">
+          <div class="who">你</div>
+          <div class="bubble">确认下单。</div>
+        </div>
+        <div class="turn bot">
+          <div class="who">助手</div>
+          <div class="bubble">
+            已提交，订单号 87，状态「已提交」，成交 0/100。<br>
+            想盯进度就问我「成交了没」，不想等就让我撤单。
+            <span class="act">03 已执行 · 模拟盘账户，不需要 04</span>
+          </div>
+        </div>
+        <div class="turn user">
+          <div class="who">你</div>
+          <div class="bubble">等等，我现在是实盘，你直接给我下了吧。</div>
+        </div>
+        <div class="turn bot">
+          <div class="who">助手</div>
+          <div class="bubble">
+            实盘要多一道确认：你得明确说「确认实盘下单」，我才会真的发出去。<br>
+            刚才那笔是模拟盘，没动你的真钱。<b>现在这笔我没有提交。</b>
+            <span class="act">04 未通过 · 订单未提交</span>
+          </div>
+        </div>
+        <div class="turn user">
+          <div class="who">你</div>
+          <div class="bubble">那先算算我买得起吗。</div>
+        </div>
+        <div class="turn bot">
+          <div class="who">助手</div>
+          <div class="bubble">
+            你可用资金 <span class="num">18,600</span> 美元，这笔要占 <span class="num">23,000</span>，<b>不够</b>。<br>
+            要么减到 80 股，要么先换成融资账户——但融资是借钱炒股，利息和强平风险我得先跟你说清楚。
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</details>
+
+<!-- 不会做的事 -->
+<div class="band">
+  <div class="wrap">
+    <div class="eyebrow">边界</div>
+    <h2>这三件事，它不会替你做</h2>
+    <p class="sec-lead">不是能力不够，是故意不做。涉及真钱的操作，决定权必须在你手上。</p>
+    <div class="dont">
+      <div class="item">
+        <h3>不替你决定买什么</h3>
+        <p>不说「该买」「会涨」「现在是底」。你给标的和参数，我只负责执行到位。</p>
+      </div>
+      <div class="item">
+        <h3>不自己按下确认键</h3>
+        <p>参数不齐就停下来问你；实盘下单必须你亲口再说一次「确认实盘下单」。</p>
+      </div>
+      <div class="item">
+        <h3>不要你的账号密码</h3>
+        <p>只连你电脑上已经登录的客户端。密码、验证码、IB Key 都不用给我。</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FAQ -->
+<div class="band soft">
+  <div class="wrap">
+    <div class="eyebrow">常见问题</div>
+    <h2>新手最常问的七个</h2>
+    <p class="sec-lead">如果你还有别的疑问，直接问就好——用你自己的说法。</p>
+
+    <details open>
+      <summary>问答层和实操层，我该用哪个？</summary>
+      <div class="dbody">
+        <p>看你这句话里有没有「我的账户」。问「手续费多少」「内地人能不能开户」，是第一块，不用连任何东西；问「我还有多少钱」「帮我买 100 股」，是第二块，得先把电脑上的客户端开起来。</p>
+        <p>两层可以在同一个对话里随时切。先问一句规则、再动手下单，很正常。</p>
+      </div>
+    </details>
+    <details>
+      <summary>我完全不懂代码，能用吗？</summary>
+      <div class="dbody">
+        <p>能，而且你不需要看到任何命令。命令是我在后台用的，你只负责用中文说想做什么、看我用中文回的结果。</p>
+        <p>唯一需要你动手的是第二块开头的三步配置（开客户端、勾一个开关、说一句「检查连接」）。只问规则的话，这三步都可以跳过。</p>
+      </div>
+    </details>
+    <details>
+      <summary>要花钱吗？需要额外订阅什么吗？</summary>
+      <div class="dbody">
+        <p>这个助手本身不收费。但有两笔钱是盈透收的，跟助手无关：</p>
+        <p><b>行情订阅</b>——想看实时报价要订阅，美股非专业实时打包大约每月 10 美元，当月佣金满 30 美元可免。不订阅也能用，只是报价会延迟十几分钟，我会明确告诉你「这是延迟数据」。</p>
+        <p><b>交易佣金</b>——美股固定式每股 0.005 美元、每笔最低 1 美元。这些我都会在下单前算给你看。</p>
+      </div>
+    </details>
+    <details>
+      <summary>它会不会自己偷偷下单？</summary>
+      <div class="dbody">
+        <p>不会。查数据用的连接是只读的，物理上改不了账户。要下单必须过两道关：先把参数念给你确认，实盘账户还要你再说一次「确认实盘下单」。</p>
+        <p>而且它不会判断「该不该买」，没有你的明确指令，它什么都不会发。</p>
+      </div>
+    </details>
+    <details>
+      <summary>我的账户信息安全吗？</summary>
+      <div class="dbody">
+        <p>连接只发生在你的电脑和你的盈透客户端之间，走的是本机端口，不经过第三方服务器，也不上传你的账号。</p>
+        <p>它不会索取密码或验证码。如果哪天有人用「帮忙配置」的名义问你要 IB Key 验证码，那一定是骗子。</p>
+      </div>
+    </details>
+    <details>
+      <summary>它说的数字准吗？会不会记错？</summary>
+      <div class="dbody">
+        <p>实测那层的数字——账户、行情、订单状态——都是从你的客户端实时读的，不靠记忆。</p>
+        <p>问答层的回答（手续费、开户条件、税率）来自整理好的资料，每条都标了核实月份。如果那条信息超过半年，我会主动提醒你「可能已变，建议去官网复核」——政策变得比你想的快。</p>
+      </div>
+    </details>
+    <details>
+      <summary>连不上，一直报错怎么办？</summary>
+      <div class="dbody">
+        <p>按顺序查三件事：客户端有没有登录；<b>API</b> 设置里的 <b>Enable ActiveX and Socket Clients</b> 有没有勾；端口是不是和客户端一致（模拟盘 7497 / 实盘 7496）。</p>
+        <p>把报错原文贴给我，我基本能一眼看出卡在哪。常见的是「连上了但账户是空的」——那是端口选错了。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<!-- 术语 -->
+<div class="band">
+  <div class="wrap">
+    <div class="eyebrow">术语速查</div>
+    <h2>这些词听不懂，看一眼就够</h2>
+    <p class="sec-lead">我在对话里会尽量避开术语，实在要用的时候会顺手解释。下面是最常出现的几个。</p>
+    <table>
+      <thead><tr><th>你会听到</th><th>说白了就是</th></tr></thead>
+      <tbody>
+        <tr><td class="term">问答层 / 实操层</td><td>前一个只查资料、不碰账户；后一个连你的客户端，能看到也能操作真账户。两层互不影响。</td></tr>
+        <tr><td class="term">只读连接</td><td>权限上只能看、不能改。查余额和行情都走这个，所以不存在悄悄下单的可能。</td></tr>
+        <tr><td class="term">dry-run（预演）</td><td>把一笔单子的参数、保证金、手续费算给你看，但不发出去。你没点头，就停在这一步。</td></tr>
+        <tr><td class="term">TWS / IB Gateway</td><td>盈透的两个电脑客户端，必须开着并登录，我才能连上你的账户。手机 App 不行。</td></tr>
+        <tr><td class="term">模拟盘（纸面账户）</td><td>假钱、真行情，用来练手。账户号 <b>DU</b> 开头，亏了不心疼。</td></tr>
+        <tr><td class="term">实盘账户</td><td>真钱。账户号 <b>U</b> 开头。在这里下单，我会额外要你确认一次。</td></tr>
+        <tr><td class="term">限价单</td><td>你指定一个价格，只有到这个价或更好才成交。最常用，也最不容易吃亏。</td></tr>
+        <tr><td class="term">市价单</td><td>不管价格，马上成交。价格由市场定，波动大时可能买贵。</td></tr>
+        <tr><td class="term">保证金</td><td>开这个仓位要先压住多少钱。不是手续费，平仓后会还回来。</td></tr>
+        <tr><td class="term">浮盈 / 浮亏</td><td>还没卖出时的账面赚亏。卖掉之后才变成「已实现」。</td></tr>
+        <tr><td class="term">购买力</td><td>账户最多还能买多少，通常比可用资金大（融资账户）。是上限，不是建议。</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- 进阶 -->
+<div class="band soft">
+  <div class="wrap">
+    <div class="eyebrow">给想自己动手的人</div>
+    <h2>也可以直接在终端里跑</h2>
+    <p class="sec-lead">
+      如果你习惯命令行，或者想写脚本定时拉数据，技能包里带了完整的命令行工具。
+      不想碰的话，这一整块可以忽略，完全不影响使用。
+    </p>
+    <details>
+      <summary>14 个命令速查</summary>
+      <div class="dbody">
+        <p>前缀统一是 <code>./scripts/ibkr.sh</code>。任何命令加 <code>--json</code> 输出结构化数据。前十个属于只读，只有 <code>place-order</code> 与 <code>cancel-order</code> 会动账户。</p>
+        <ul style="margin:0;padding-left:20px">
+          <li><code>ping</code> — 连通性与账户类型自检</li>
+          <li><code>account-summary</code> — 净值、现金、购买力、保证金</li>
+          <li><code>positions</code> — 持仓与成本</li>
+          <li><code>portfolio</code> — 组合市值与浮盈</li>
+          <li><code>pnl --wait 3</code> — 当日、浮动、已实现盈亏</li>
+          <li><code>quote --symbol AAPL</code> — 报价快照</li>
+          <li><code>historical --symbol AAPL --duration "30 D" --bar-size "1 day"</code> — 历史 K 线</li>
+          <li><code>contract-details --symbol ES --sec-type FUT --expiry 202612</code> — 合约与 conId</li>
+          <li><code>scanner --scan-code TOP_PERC_GAIN --rows 20</code> — 扫描器</li>
+          <li><code>preview-order ...</code> — 保证金与佣金预演（绝不下单）</li>
+          <li><code>place-order ... [--execute] [--live-confirm]</code> — 下单</li>
+          <li><code>open-orders</code> — 未成交订单</li>
+          <li><code>cancel-order --order-id 12345 --execute</code> — 撤单</li>
+          <li><code>executions</code> — 当日成交</li>
+        </ul>
+      </div>
+    </details>
+    <details>
+      <summary>把连接参数固定下来，省得每次敲</summary>
+      <div class="dbody">
+        <code class="cmd">export IBKR_HOST=127.0.0.1
+export IBKR_PORT=7497
+export IBKR_CLIENT_ID=1
+export IBKR_ACCOUNT=DU123456</code>
+        <p style="margin-top:12px">装依赖：<code>python3 -m pip install -r requirements.txt</code>。需要 Python 3.9 以上。</p>
+      </div>
+    </details>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <p><b>IBKR国际助理</b> v1.1.10 · 更新于 2026-10-21</p>
+    <p>本技能为第三方工具，与 Interactive Brokers Group, Inc. 及其关联公司无隶属、代理或背书关系。</p>
+    <p>所有内容不构成投资建议。行情、费率、开户政策以盈透官网为准；交易有风险，下单前请自行核对方向、数量与价格。</p>
+  </div>
+</footer>
+
+<script>
+  // 点锚点直达时，把对应的折叠块展开（否则链接会跳到一个收起来的东西上）
+  function openTarget(hash){
+    var t = hash && document.querySelector(hash);
+    if (t && t.tagName === 'DETAILS') t.open = true;
+  }
+  document.addEventListener('click', function(e){
+    var a = e.target.closest && e.target.closest('a[href^="#"]');
+    if (a) openTarget(a.getAttribute('href'));
+  });
+  openTarget(location.hash);
+  // 打印时全部展开，避免纸质稿缺内容
+  window.addEventListener('beforeprint', function(){
+    Array.prototype.forEach.call(document.querySelectorAll('details'), function(d){ d.open = true; });
+  });
+</script>
+</body>
+</html>

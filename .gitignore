@@ -1,0 +1,21 @@
+# 打包产物
+ibkr-expert.zip
+
+# 编辑器 / 系统
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# 本地产出（TWS 查询结果、体检报告等）
+output/
+*.local.md
+
+# WorkBuddy 本地记忆
+.workbuddy/
